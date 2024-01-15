@@ -312,16 +312,19 @@ df = pd.DataFrame(columns=['Data'])  # Inicializa um DataFrame vazio
 
 
 # URL do arquivo CSV no GitHub
-csv_url = "https://raw.githubusercontent.com/Henitz/challenge3/main/Dados Históricos - Ibovespa (4).csv"
-
+csv_url = "https://raw.githubusercontent.com/Henitz/challenge3/master/Dados%20Hist%C3%B3ricos%20-%20Ibovespa%20(4).csv"
 # Baixa o arquivo CSV localmente
 local_filename = "Dados Históricos - Ibovespa (4).csv"
 response = requests.get(csv_url)
-with open(local_filename, 'wb') as f:
-    f.write(response.content)
+if response.status_code == 200:
+    with open(local_filename, 'wb') as f:
+        f.write(response.content)
+else:
+    st.error(f"Erro ao baixar o arquivo. Status code: {response.status_code}")
+    st.stop()
 
 # Obtém o nome do arquivo para usar como chave de cache
-key_for_cache = str(os.path.basename(local_filename)) if os.path.exists(local_filename) else None
+key_for_cache = os.path.basename(local_filename) if os.path.exists(local_filename) else None
 
 # File Uploader
 upload_message = (
@@ -331,7 +334,9 @@ upload_message = (
     "YYYY-MM-DD para data ou YYYY-MM-DD HH:MM:SS para timestamp. "
     "A coluna y deve ser numérica e representa a medida que queremos estimar."
 )
+
 uploaded_file = st.file_uploader(upload_message, type='csv', key=key_for_cache)
+
 
 # Use o arquivo CSV local
 # if uploaded_file is None:
@@ -346,14 +351,6 @@ uploaded_file = st.file_uploader(upload_message, type='csv', key=key_for_cache)
 
 import streamlit as st
 
-upload_message = (
-    "Importe os dados da série em formato CSV aqui. Posteriormente, as colunas serão nomeadas ds e y. "
-    "A entrada de dados para o Prophet sempre deve ser com as colunas: ds e y. "
-    "A coluna ds (datestamp) deve ter o formato esperado pelo Pandas, idealmente "
-    "YYYY-MM-DD para data ou YYYY-MM-DD HH:MM:SS para timestamp. "
-    "A coluna y deve ser numérica e representa a medida que queremos estimar."
-)
-
 # Use str() to convert the cache key to a string
 
 
@@ -363,7 +360,8 @@ upload_message = (
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
-    if not df.empty and 'Data' in df.columns and 'Último' in df.columns:
+    # if not df.empty and 'Data' in df.columns and 'Último' in df.columns:
+    if not df.empty:
         # Renomear colunas para 'ds' e 'y'
         df = df.rename(columns={'Data': 'ds', 'Último': 'y'})
         df['ds'] = pd.to_datetime(df['ds'], format='%d.%m.%Y')
