@@ -360,8 +360,7 @@ import streamlit as st
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
-    # if not df.empty and 'Data' in df.columns and 'Último' in df.columns:
-    if not df.empty:
+    if not df.empty and 'Data' in df.columns and 'Último' in df.columns:
         # Renomear colunas para 'ds' e 'y'
         df = df.rename(columns={'Data': 'ds', 'Último': 'y'})
         df['ds'] = pd.to_datetime(df['ds'], format='%d.%m.%Y')
