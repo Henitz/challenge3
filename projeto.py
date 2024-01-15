@@ -292,7 +292,7 @@ tab_contents = {
     "Sobre o Autor": """
     <div class="custom-container">
         Criado por Henrique José Itzcovici.
-        Código disponível em: <a href="https://github.com/Henitz/challenge2" target="_blank">GitHub</a>
+        Código disponível em: <a href="https://github.com/Henitz/challenge3" target="_blank">GitHub</a>
     </div>
     """
 }
